@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Admin login · {{ biz.name }}{% endblock %}
+{% block main %}
+<div class="wrap narrow">
+  <h1>Order dashboard</h1>
+  <form method="post" class="form small">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% if error %}<p class="alert" role="alert">{{ error }}</p>{% endif %}
+    <div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required autofocus></div>
+    <button class="btn" type="submit">Log in</button>
+  </form>
+</div>
+{% endblock %}

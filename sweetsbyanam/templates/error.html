@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} · {{ biz.name }}{% endblock %}
+{% block main %}
+<div class="wrap narrow thanks">
+  <p class="kicker">{{ code }}</p>
+  <h1>{{ message }}</h1>
+  <p><a class="btn" href="{{ url_for('home') }}">Back to home</a></p>
+</div>
+{% endblock %}

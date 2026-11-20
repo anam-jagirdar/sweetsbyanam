@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ biz.name }}: homemade treats in Algonquin, IL{% endblock %}</title>
+  <meta name="description" content="{% block description %}Custom cakes, cupcakes, cake pops, brownies, dessert shooters and more, baked with love in Algonquin, IL. Order online at least one week ahead.{% endblock %}">
+  <meta name="theme-color" content="#FBF8F2">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="brand" href="{{ url_for('home') }}" aria-label="{{ biz.name }} home">{{ biz.name }}</a>
+      <nav aria-label="Main">
+        <a href="{{ url_for('menu_page') }}" {% if request.endpoint == 'menu_page' %}aria-current="page"{% endif %}>Menu</a>
+        <a href="{{ url_for('gallery') }}" {% if request.endpoint == 'gallery' %}aria-current="page"{% endif %}>Gallery</a>
+        <a class="nav-cta" href="{{ url_for('order_page') }}" {% if request.endpoint == 'order_page' %}aria-current="page"{% endif %}>Order</a>
+      </nav>
+    </div>
+  </header>
+  <div class="gingham" role="presentation"></div>
+
+  <main id="main">{% block main %}{% endblock %}</main>
+
+  <div class="gingham" role="presentation"></div>
+  <footer class="site-footer">
+    <div class="wrap foot">
+      <div>
+        <p class="foot-brand">{{ biz.name }}</p>
+        <p>{{ biz.tagline }}<br>{{ biz.city }}</p>
+      </div>
+      <div>
+        <p class="foot-head">Say hello</p>
+        <p><a href="mailto:{{ biz.email }}">{{ biz.email }}</a><br>
+        <a href="{{ biz.instagram_url }}" rel="noopener">Instagram @{{ biz.instagram }}</a></p>
+      </div>
+      <div>
+        <p class="foot-head">Good to know</p>
+        <p>Orders need {{ rules.MIN_DAYS_NOTICE }} days' notice.<br>Pickup and delivery available.</p>
+      </div>
+    </div>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

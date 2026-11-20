@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ order.ref }} · {{ biz.name }}{% endblock %}
+{% block main %}
+<div class="wrap narrow">
+  <p><a href="{{ url_for('admin.dashboard') }}">← All orders</a></p>
+  <h1>{{ order.ref }} <span class="badge s-{{ order.status }}">{{ order.status }}</span></h1>
+  {% if saved %}<p class="alert ok" role="status">Saved.</p>{% endif %}
+
+  <section class="card">
+    <h2>Customer</h2>
+    <p><strong>{{ order.name }}</strong><br>
+    <a href="tel:{{ order.phone }}">{{ order.phone }}</a><br>
+    {% if order.email %}<a href="mailto:{{ order.email }}?subject=Your {{ biz.name }} order {{ order.ref }}">{{ order.email }}</a>{% else %}<span class="muted">No email given. Call or text.</span>{% endif %}</p>
+    <p><strong>{{ order.fulfilment|capitalize }}</strong>{% if order.address %}: {{ order.address }}{% endif %}</p>
+    <p><strong>Event:</strong> {{ event.strftime('%A, %B') }} {{ event.day }}, {{ event.year }}{% if order.occasion %} ({{ order.occasion }}){% endif %}<br>
+    <strong>Payment due:</strong> {{ due.strftime('%B') }} {{ due.day }}, {{ due.year }}</p>
+    <p class="muted">Received {{ order.created_at }} UTC</p>
+  </section>
+
+  <section class="card">
+    <h2>Items</h2>
+    <ul class="order-items">
+      {% for item in items %}
+      <li><strong>{{ item.qty }} × {{ item.name }}</strong> <span class="muted">({{ money(item.line_cents) }} base)</span>
+        <ul>{% for k, v in item.details.items() %}<li>{{ k }}: {{ v }}</li>{% endfor %}</ul>
+      </li>
+      {% endfor %}
+    </ul>
+    <p><strong>Estimated base total: {{ money(order.estimate_cents, order.custom_pricing) }}</strong></p>
+    {% if order.allergies %}<p class="alert"><strong>Allergies:</strong> {{ order.allergies }}</p>{% endif %}
+    {% if order.notes %}<p><strong>Customer notes:</strong><br>{{ order.notes }}</p>{% endif %}
+  </section>
+
+  {% if images %}
+  <section class="card">
+    <h2>Inspiration photos</h2>
+    <ul class="admin-photos">
+      {% for im in images %}
+      <li><a href="{{ url_for('admin.photo', image_id=im.id) }}" target="_blank" rel="noopener"><img src="{{ url_for('admin.photo', image_id=im.id) }}" alt="Inspiration photo: {{ im.original_name }}" loading="lazy"></a></li>
+      {% endfor %}
+    </ul>
+    <p class="muted">Click a photo to open it full size.</p>
+  </section>
+  {% endif %}
+
+  <form method="post" class="card form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <h2>Update</h2>
+    <div class="field"><label for="status">Status</label>
+      <select id="status" name="status">{% for s in statuses %}<option value="{{ s }}" {% if s == order.status %}selected{% endif %}>{{ s|capitalize }}</option>{% endfor %}</select></div>
+    <div class="field"><label for="owner_notes">Your private notes</label><textarea id="owner_notes" name="owner_notes" rows="4" maxlength="2000">{{ order.owner_notes }}</textarea></div>
+    <button class="btn" type="submit">Save</button>
+  </form>
+</div>
+{% endblock %}

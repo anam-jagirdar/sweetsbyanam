@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Orders · {{ biz.name }}{% endblock %}
+{% block main %}
+<div class="wrap">
+  <div class="admin-head">
+    <h1>Orders</h1>
+    <form method="post" action="{{ url_for('admin.logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn ghost small-btn" type="submit">Log out</button></form>
+  </div>
+  <nav class="tabs" aria-label="Filter orders">
+    <a href="{{ url_for('admin.dashboard', status='open') }}" {% if status == 'open' %}aria-current="page"{% endif %}>Open</a>
+    {% for s in statuses %}<a href="{{ url_for('admin.dashboard', status=s) }}" {% if status == s %}aria-current="page"{% endif %}>{{ s|capitalize }} ({{ counts.get(s, 0) }})</a>{% endfor %}
+    <a href="{{ url_for('admin.dashboard', status='all') }}" {% if status == 'all' %}aria-current="page"{% endif %}>All</a>
+  </nav>
+
+  {% if rows %}
+  <div class="table-wrap">
+  <table class="orders">
+    <thead><tr><th>Event date</th><th>Order</th><th>Customer</th><th>Occasion</th><th>Est.</th><th>Status</th></tr></thead>
+    <tbody>
+    {% for o in rows %}
+      <tr>
+        <td data-label="Event date">{{ o.event_date }}{% if o.event_date < today and o.status in ('new','confirmed','paid') %} <span class="badge late">past</span>{% endif %}</td>
+        <td data-label="Order"><a href="{{ url_for('admin.order_detail', order_id=o.id) }}">{{ o.ref }}</a></td>
+        <td data-label="Customer">{{ o.name }}<br><span class="muted">{{ o.fulfilment }}</span></td>
+        <td data-label="Occasion" class="muted">{{ o.occasion or '' }}</td>
+        <td data-label="Est.">{{ money(o.estimate_cents, o.custom_pricing) }}</td>
+        <td data-label="Status"><span class="badge s-{{ o.status }}">{{ o.status }}</span></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p class="empty">No orders here yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

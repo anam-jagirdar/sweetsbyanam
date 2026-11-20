@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Order received · {{ biz.name }}{% endblock %}
+{% block main %}
+<div class="wrap narrow thanks">
+  <p class="kicker">Order received</p>
+  <h1>Thank you, {{ first_name }}!</h1>
+  <p class="lede">Your request <strong class="ref">{{ order.ref }}</strong> is in. {% if order.email %}We will email you at <strong>{{ order.email }}</strong>{% else %}We will call or text you at <strong>{{ order.phone }}</strong>{% endif %} to confirm the details and final price.</p>
+
+  <section class="card">
+    <h2>Your request</h2>
+    <p><strong>For:</strong> {{ event.strftime('%A, %B') }} {{ event.day }}, {{ event.year }} ({{ order.fulfilment }})</p>
+    <ul class="order-items">
+      {% for item in items %}
+      <li><strong>{{ item.qty }} × {{ item.name }}</strong>
+        <ul>{% for k, v in item.details.items() %}<li>{{ k }}: {{ v }}</li>{% endfor %}</ul>
+      </li>
+      {% endfor %}
+    </ul>
+    {% if image_count %}<p>We received your {{ image_count }} inspiration photo{{ '' if image_count == 1 else 's' }}.</p>{% endif %}
+    <p>Estimated base total: <strong>{{ money(order.estimate_cents) }}{% if order.custom_pricing %}+{% endif %}</strong>. Add-ons and customizations are extra and will be confirmed.</p>
+  </section>
+
+  <section class="card">
+    <h2>What happens next</h2>
+    <ol>
+      <li>We'll {% if order.email %}email{% else %}call or text{% endif %} you to confirm your order and the final price.</li>
+      <li>Payment is due on <strong>{{ due.strftime('%B') }} {{ due.day }}, {{ due.year }}</strong> ({{ rules.PAYMENT_DAYS_BEFORE }} days before your event).</li>
+      <li>Pickup or delivery on {{ event.strftime('%B') }} {{ event.day }}.</li>
+    </ol>
+    <p>Questions? Email <a href="mailto:{{ biz.email }}">{{ biz.email }}</a> and quote <strong>{{ order.ref }}</strong>.</p>
+  </section>
+  <p><a class="btn ghost" href="{{ url_for('home') }}">Back to home</a></p>
+</div>
+{% endblock %}

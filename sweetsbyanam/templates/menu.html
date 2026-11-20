@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Menu · {{ biz.name }}{% endblock %}
+{% block main %}
+<div class="wrap page-head center">
+  <h1>The menu</h1>
+  <p class="lede">All prices are base prices. Add-ons and customizations (detailed themes, embellishments, individual packaging and so on) cost extra, and we will confirm your final price.</p>
+  <p><a class="btn" href="{{ url_for('order_page') }}">Place an order</a></p>
+</div>
+
+<div class="wrap menu-list">
+  {% for key, p in treats.items() %}
+  <section class="item" id="{{ key }}">
+    <div class="item-photo">
+      {% if photos[key] %}<img src="{{ url_for('static', filename=photos[key]) }}" alt="{{ p.name }}" loading="lazy">
+      {% else %}<div class="photo-ph" role="img" aria-label="Photo of {{ p.name }} coming soon"><span>{{ p.name }}</span></div>{% endif %}
+    </div>
+    <div class="item-body">
+      <div class="item-top"><h2>{{ p.name }}</h2><p class="price">{{ price_label(p) }}</p></div>
+      <p>{{ p.blurb }}</p>
+
+      {% if key in ('cupcakes', 'custom_cake') %}
+      <details>
+        <summary>Signature combinations</summary>
+        <dl class="combos">{% for name, what in m.COMBOS.items() %}<dt>{{ name }}</dt><dd>{{ what }}</dd>{% endfor %}</dl>
+      </details>
+      <details>
+        <summary>Or build your own</summary>
+        <p class="tags-h">Cake flavors</p><ul class="tags">{% for f in m.CAKE_FLAVORS %}<li>{{ f }}</li>{% endfor %}</ul>
+        <p class="tags-h">Frosting flavors</p><ul class="tags">{% for f in m.FROSTING_FLAVORS %}<li>{{ f }}</li>{% endfor %}</ul>
+      </details>
+      {% elif key == 'cake_pops' %}
+      <details><summary>Cake flavors</summary><ul class="tags">{% for f in m.CAKE_FLAVORS %}<li>{{ f }}</li>{% endfor %}</ul></details>
+      {% elif key == 'mini_cheesecakes' %}
+      <details><summary>Flavors</summary><ul class="tags">{% for f in m.CHEESECAKE_FLAVORS %}<li>{{ f }}</li>{% endfor %}</ul></details>
+      {% elif key == 'brownies' %}
+      <details><summary>Flavors</summary><ul class="tags">{% for f in m.BROWNIES %}<li>{{ f }}</li>{% endfor %}</ul></details>
+      {% elif key == 'dipped' %}
+      <details open><summary>All covered in chocolate</summary><ul class="tags">{% for f in m.DIPPED %}<li>{{ f }}</li>{% endfor %}</ul></details>
+      {% elif key == 'shooters' %}
+      <details><summary>Flavors</summary>
+        <dl class="combos">{% for name, what in m.SHOOTERS.items() %}<dt>{{ name }}</dt><dd>{{ what }}</dd>{% endfor %}</dl>
+      </details>
+      {% endif %}
+    </div>
+  </section>
+  {% endfor %}
+</div>
+
+<section class="band" id="party-packs">
+  <div class="wrap">
+    <h2>Party packs</h2>
+    <p class="lede center">Everything for the dessert table in one order. Prices start at:</p>
+    <div class="packs">
+      {% for key, p in packs.items() %}
+      <article class="pack" id="{{ key }}">
+        <h3>{{ p.name.replace(' Party Pack', '') }}</h3>
+        <p class="price">{{ price_label(p).replace(' / pack', '') }}</p>
+        <p class="pack-n">{{ p.pack_dozens }} dozen each of:</p>
+        <ul>
+          {% for c in m.PACK_CONTENTS %}<li>{{ c }}</li>{% endfor %}
+        </ul>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<div class="wrap page-foot center">
+  <h2>Order details</h2>
+  <ul class="rules">
+    <li>Please place your order at least <strong>{{ rules.MIN_DAYS_NOTICE }} days</strong> before your event.</li>
+    <li>Pickup and delivery are both available.</li>
+    <li>Payment is due <strong>{{ rules.PAYMENT_DAYS_BEFORE }} days before</strong> your event date.</li>
+    <li>Prices are base prices. Add-ons and customizations are additional.</li>
+  </ul>
+  <p><a class="btn" href="{{ url_for('order_page') }}">Place an order</a></p>
+</div>
+{% endblock %}

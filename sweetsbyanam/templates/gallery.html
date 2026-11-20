@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Gallery · {{ biz.name }}{% endblock %}
+{% block main %}
+<div class="wrap page-head">
+  <h1>Gallery</h1>
+  <p class="lede">A look at what's come out of the kitchen. Follow along on <a href="{{ biz.instagram_url }}" rel="noopener">Instagram @{{ biz.instagram }}</a> for the latest.</p>
+</div>
+<div class="wrap">
+  {% if photos %}
+  <div class="photo-grid">
+    {% for p in photos %}<figure class="photo"><img src="{{ url_for('static', filename=p) }}" alt="A treat made by {{ biz.name }}" loading="lazy"></figure>{% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <p>Photos are on their way. In the meantime, see more on <a href="{{ biz.instagram_url }}" rel="noopener">Instagram</a>.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
